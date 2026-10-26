@@ -34,6 +34,7 @@ chmod +x /tmp/linuxdeploy.AppImage /tmp/appimagetool.AppImage
 
 # Bind the included browser engine and GI runtime rather than depending on
 # user-local Python, PyGObject or patched Firefox installations.
+rm -f "$APPDIR/AppRun"
 cat > "$APPDIR/AppRun" <<'LAUNCHER'
 #!/bin/sh
 APPDIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
