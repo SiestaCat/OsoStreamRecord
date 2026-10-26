@@ -9,7 +9,7 @@ from oso.platforms.browser import BrowserSession, checkLiveWithRecovery
 from oso.platforms.config import getProfileSeed
 from oso.platforms.profile import createBrowserFactory
 from oso.platforms.recording import RecordingJob
-from oso.platforms.streams import getLiveStreams
+from oso.platforms.streams import LiveStreamUnavailable, getLiveStreams
 from .cloud import uploadVideo
 
 logger = logging.getLogger("oso.recorder")
@@ -187,6 +187,10 @@ class RecorderManager:
                 state["lastError"] = "FFmpeg did not start"
         except asyncio.CancelledError:
             raise
+        except LiveStreamUnavailable as error:
+            # A LIVE room without a playback URL is not an offline channel.
+            state.update(status="live", lastError=str(error), live=True)
+            logger.warning("Live channel %s is not recordable yet: %s", channelId, error)
         except Exception as error:
             state.update(status="error", lastError=str(error), live=None)
             logger.exception("Cannot check live channel %s", channelId)

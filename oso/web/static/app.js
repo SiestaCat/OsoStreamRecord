@@ -23,8 +23,11 @@ async function refresh(quiet=false) {
   const response = await fetch("/state");
   if (response.status === 401) { location.reload(); return; }
   if (!response.ok) throw Error("Cannot refresh application state");
-  app.state = await response.json();
+  const nextState = await response.json();
+  const unchanged = quiet && JSON.stringify(nextState) === JSON.stringify(app.state);
+  app.state = nextState;
   if (app.state.settings.language && app.state.settings.language !== app.lang) await loadLocale(app.state.settings.language);
+  if (unchanged) return;
   if (quiet && app.dirtyForm) renderNavigation();
   else render();
 }
@@ -166,6 +169,16 @@ function render() {
   const [part, id] = app.view.split(":");
   const pages = {home: renderHome, videos: renderVideos, cloud: renderCloud, export: renderExport, import: renderImport, settings: renderSettings};
   $("#content").innerHTML = part === "profile" ? renderProfile(Number(id)) : part === "channel" ? renderChannel(Number(id)) : (pages[part] || renderHome)();
+  $("#content").querySelectorAll('[data-click="finishVnc"]').forEach(button => {
+    button.addEventListener("click", async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (app.busy) { console.warn("vnc.finish ignored: another operation is running"); return; }
+      button.disabled = true;
+      try { await perform("vnc.finish", {id: Number(button.dataset.id)}, t("loginSaved")); }
+      finally { if (button.isConnected) button.disabled = false; }
+    });
+  });
   $("#currentLocation").textContent = part === "profile" ? t("profiles") : part === "channel" ? t("channels") : t(part === "home" ? "overview" : part);
   $("#footerStatus").textContent = t("localRecorder");
   $("#refreshStatus").textContent = "● " + t("connected");
