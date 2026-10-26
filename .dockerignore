@@ -1,0 +1,11 @@
+.git
+__pycache__
+.pytest_cache
+*.pyc
+*.sqlite
+.venv
+videos
+data
+firefox-login
+_reference
+*.zip

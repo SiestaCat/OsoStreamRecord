@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oso-stream-record"
+version = "0.1.0"
+description = "Cross-platform live stream recorder with GTK 4 and web interfaces"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["cryptography>=42", "pyzipper>=0.3.6"]
+
+[project.optional-dependencies]
+web = ["fastapi>=0.110", "uvicorn[standard]>=0.28", "python-multipart>=0.0.9", "jinja2>=3.1"]
+recorder = ["invisible-playwright>=0.43.0,<0.44", "playwright>=1.45"]
+mega = ["mega.py>=1.0.8"]
+desktop = ["pystray>=0.19", "Pillow>=10"]
+test = ["pytest>=8", "httpx>=0.27"]
+
+[project.scripts]
+oso-web = "oso.web.main:main"
+oso-desktop = "oso.desktop.main:main"
+
+[tool.setuptools.packages.find]
+include = ["oso*"]
+
+[tool.setuptools.package-data]
+"oso.web" = ["static/*"]
+"oso.locales" = ["*.json"]

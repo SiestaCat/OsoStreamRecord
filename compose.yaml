@@ -1,0 +1,36 @@
+services:
+  web:
+    build: .
+    container_name: oso-stream-record
+    restart: unless-stopped
+    shm_size: 1gb
+    ports:
+      - "${OSO_WEB_HOST:-127.0.0.1}:${OSO_WEB_PORT:-8080}:8080"
+    environment:
+      OSO_WEB_PASSWORD: ${OSO_WEB_PASSWORD:?Set OSO_WEB_PASSWORD in .env}
+      OSO_WEB_PORT: 8080
+      OSO_VNC_PORT: ${OSO_VNC_PORT:-3001}
+      OSO_VNC_BROWSER_DIR: /browser-login
+      TZ: ${TZ:-Europe/Madrid}
+    volumes:
+      - ./data:/data
+      - ./videos:/videos
+      - ./firefox-login:/browser-login:ro
+    depends_on:
+      - firefox
+
+  firefox:
+    image: lscr.io/linuxserver/firefox:latest
+    container_name: oso-browser-login
+    restart: unless-stopped
+    shm_size: 1gb
+    ports:
+      - "${OSO_VNC_HOST:-127.0.0.1}:${OSO_VNC_PORT:-3001}:3001"
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-Europe/Madrid}
+      CUSTOM_USER: ${OSO_VNC_USERNAME:-oso}
+      PASSWORD: ${OSO_WEB_PASSWORD:?Set OSO_WEB_PASSWORD in .env}
+    volumes:
+      - ./firefox-login:/config
