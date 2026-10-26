@@ -58,7 +58,7 @@ Do not use the VNC Firefox browser for background recording; the background engi
 If `invisible_playwright` needs its patched engine updated, rebuild the web image:
 
 ```bash
-docker compose build --no-cache web
+docker compose build web
 docker compose up -d
 ```
 
