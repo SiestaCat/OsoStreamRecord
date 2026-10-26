@@ -23,7 +23,7 @@
   "saveChanges": "Save changes",
   "browserProfile": "Browser profile",
   "browserSession": "Browser sign-in",
-  "browserLoginInfo": "Sign in to TikTok using the isolated browser session. Complete sign-in before importing cookies.",
+  "browserLoginInfo": "Sign in to TikTok or other platform, using the isolated browser session. Complete sign-in before importing cookies. Use `oso` username and admin password.",
   "loginBrowser": "Open login browser",
   "openVnc": "Open VNC browser",
   "finishLogin": "Finish and save cookies",
