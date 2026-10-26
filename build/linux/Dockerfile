@@ -13,5 +13,6 @@ ENV PATH=/opt/venv/bin:$PATH
 COPY . /src
 WORKDIR /src
 RUN pip install --no-cache-dir '.[recorder,desktop,mega]' pyinstaller \
+    && pip uninstall -y pathlib \
     && python -m invisible_playwright fetch
 ENTRYPOINT ["/bin/bash", "/src/build/linux/build.sh"]
